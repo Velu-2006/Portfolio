@@ -377,21 +377,24 @@ form.addEventListener("submit", async function(e) {
       body: JSON.stringify(payload)
     });
 
-    // ✅ Treat success as long as no error is thrown
-    if (response.ok || response.status === 204) { // 204 means Discord accepted it without content
+    if (response.ok || response.status === 204) {
+      // ✅ Handle successful send
       status.innerHTML = "✅ Message Sent To Discord!";
       status.style.color = "green";
       form.reset();
     } else {
-      status.innerHTML = "✅ Message Sent, but no response!";
+      // ✅ Handle unexpected response but still notify the user
+      status.innerHTML = "⚠️ Message sent but no proper confirmation!";
       status.style.color = "orange";
     }
   } catch (error) {
+    // ❌ Handle network or other errors
     status.innerHTML = "❌ Failed to send. Try again!";
     status.style.color = "red";
-    console.error("Discord Webhook error:", error);
+    console.error("Error sending message:", error);
   }
 });
+
 
 </script>
 
@@ -400,6 +403,7 @@ form.addEventListener("submit", async function(e) {
 
 </body>
 </html>
+
 
 
 
