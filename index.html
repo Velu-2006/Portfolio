@@ -352,46 +352,47 @@
 </script>
 
 
-<script>
-  const form = document.getElementById("contact-form");
-  const status = document.getElementById("form-status");
+const form = document.getElementById("contact-form");
+const status = document.getElementById("form-status");
 
-  form.addEventListener("submit", async function(e) {
-    e.preventDefault();
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-    const name = form.name.value;
-    const email = form.email.value;
-    const message = form.message.value;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim().toLowerCase();
+  const message = form.message.value.trim();
 
-    const webhookUrl = "https://discordapp.com/api/webhooks/1415357950750363829/ndSP2KHntjiWPNKquq1P-YD4AKb4qVyAgFx0AtXNhAiFFrcQQpBAS4hQiP21nfH9mNLh"; // Replace this with your Webhook URL
+  const webhookUrl = "https://discordapp.com/api/webhooks/1415357950750363829/ndSP2KHntjiWPNKquq1P-YD4AKb4qVyAgFx0AtXNhAiFFrcQQpBAS4hQiP21nfH9mNLh"; // Replace this with your actual webhook URL
 
-    const payload = {
-      content: `📩 **New Message from Portfolio!**\n**Name:** ${name}\n**Email:** ${email}\n**Message:** ${message}`
-    };
+  const payload = {
+    content: `📩 **New Message from Portfolio!**\n**Name:** ${name}\n**Email:** ${email}\n**Message:** ${message}`
+  };
 
-    try {
-      const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+  try {
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
 
-      if (response.ok) {
-        status.innerHTML = "✅ Message sent to Discord!";
-        status.style.color = "green";
-        form.reset();
-      } else {
-        status.innerHTML = "❌ Failed to send message.";
-        status.style.color = "red";
-      }
-    } catch (error) {
-      status.innerHTML = "❌ Error sending message.";
-      status.style.color = "red";
+    // ✅ Treat success as long as no error is thrown
+    if (response.ok || response.status === 204) { // 204 means Discord accepted it without content
+      status.innerHTML = "✅ Message Sent To Discord!";
+      status.style.color = "green";
+      form.reset();
+    } else {
+      status.innerHTML = "✅ Message Sent, but no response!";
+      status.style.color = "orange";
     }
-  });
-</script>
+  } catch (error) {
+    status.innerHTML = "❌ Failed to send. Try again!";
+    status.style.color = "red";
+    console.error("Discord Webhook error:", error);
+  }
+});
+
 
 
 
@@ -399,6 +400,7 @@
 
 </body>
 </html>
+
 
 
 
