@@ -356,31 +356,38 @@
   const form = document.getElementById("contact-form");
   const status = document.getElementById("form-status");
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault(); // Prevent redirect
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-    const formData = new FormData(form);
+    const name = form.name.value;
+    const email = form.email.value;
+    const message = form.message.value;
+
+    const webhookUrl = "https://discordapp.com/api/webhooks/1415357950750363829/ndSP2KHntjiWPNKquq1P-YD4AKb4qVyAgFx0AtXNhAiFFrcQQpBAS4hQiP21nfH9mNLh"; // Replace this with your Webhook URL
+
+    const payload = {
+      content: `📩 **New Message from Portfolio!**\n**Name:** ${name}\n**Email:** ${email}\n**Message:** ${message}`
+    };
 
     try {
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: formData,
-        headers: { 'Accept': 'application/json' }
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
-        status.innerHTML = "✅ Message sent successfully!";
+        status.innerHTML = "✅ Message sent to Discord!";
         status.style.color = "green";
-        
-       
         form.reset();
       } else {
-        const result = await response.json();
-        status.innerHTML = `❌ Error: ${result.message || "Something went wrong!"}`;
+        status.innerHTML = "❌ Failed to send message.";
         status.style.color = "red";
       }
     } catch (error) {
-      status.innerHTML = "❌ Failed to send. Try again later.";
+      status.innerHTML = "❌ Error sending message.";
       status.style.color = "red";
     }
   });
@@ -389,7 +396,9 @@
 
 
 
+
 </body>
 </html>
+
 
 
