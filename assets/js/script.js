@@ -37,24 +37,26 @@ $(document).ready(function () {
         }, 500, 'linear')
     });
 
-    // <!-- emailjs to mail contact form data -->
+    // ✅ EmailJS contact form handling
     $("#contact-form").submit(function (event) {
-        emailjs.init("user_TTDmetQLYgWCLzHTDgqxm");
+        event.preventDefault(); // Stop normal form submission
 
-        emailjs.sendForm('contact_service', 'template_contact', '#contact-form')
-            .then(function (response) {
-                console.log('SUCCESS!', response.status, response.text);
-                document.getElementById("contact-form").reset();
-                alert("Form Submitted Successfully");
-            }, function (error) {
-                console.log('FAILED...', error);
-                alert("Form Submission Failed! Try Again");
-            });
-        event.preventDefault();
-    });
-    // <!-- emailjs to mail contact form data -->
+        // Get form values
+        const name = $("#name").val().trim();
+        const email = $("#email").val().trim().toLowerCase();
+        const message = $("#message").val().trim();
 
-});
+        // Basic validation
+        if (!name || !email || !message) {
+            $("#form-status").html("⚠ Please fill in all fields.");
+            $("#form-status").css("color", "orange");
+            return;
+        }
+
+        // Disable send button while processing
+        $("#send-button").prop("disabled", true);
+
+        emailjs.init("user_TTDmetQLYgWCLzHTDgqxm"); // Your EmailJS user ID
 
 document.addEventListener('visibilitychange',
     function () {
@@ -249,3 +251,4 @@ srtop.reveal('.experience .timeline .container', { interval: 400 });
 /* SCROLL CONTACT */
 srtop.reveal('.contact .container', { delay: 400 });
 srtop.reveal('.contact .container .form-group', { delay: 400 });
+
